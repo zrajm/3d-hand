@@ -66,6 +66,12 @@
 
     // GUI controls
     const gui = new dat.GUI();
+    const handFolder = gui.addFolder('Hand Rotation');
+    handFolder.add(hand.rotation, 'x', 0, Math.PI * 2).name('Rotate X');
+    handFolder.add(hand.rotation, 'y', 0, Math.PI * 2).name('Rotate Y');
+    handFolder.add(hand.rotation, 'z', 0, Math.PI * 2).name('Rotate Z');
+    handFolder.open();
+
     fingers.forEach((finger, index) => {
         const folder = gui.addFolder(`Finger ${index + 1}`);
         folder.add(finger.joint1.rotation, 'x', 0, Math.PI / 2).name('Joint 1');
