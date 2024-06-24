@@ -26,6 +26,7 @@
   scene.add(directionalLight)
 
   // Hand base
+  const fingerNames = ['Index Finger', 'Middle Finger', 'Ring Finger', 'Little Finger', 'Thumb']
   const handGeometry = new THREE.BoxGeometry(2, 0.5, 2)
   const handMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 })
   const hand = new THREE.Mesh(handGeometry, handMaterial)
@@ -80,7 +81,7 @@
   handFolder.open()
 
   fingers.forEach((finger, index) => {
-    const folder = gui.addFolder(`Finger ${index + 1}`)
+    const folder = gui.addFolder(fingerNames[index])
     folder.add(finger.joint1.rotation, 'x', 0, Math.PI / 2).name('Joint 1')
     folder.add(finger.joint2.rotation, 'x', 0, Math.PI / 2).name('Joint 2')
     folder.add(finger.joint3.rotation, 'x', 0, Math.PI / 2).name('Joint 3')
