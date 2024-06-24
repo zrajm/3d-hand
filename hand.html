@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Controllable Hand</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
+<script>
+    // Set up the scene, camera, and renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Hand base
+    const handGeometry = new THREE.BoxGeometry(2, 0.5, 2);
+    const handMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+    const hand = new THREE.Mesh(handGeometry, handMaterial);
+    scene.add(hand);
+
+    // Finger joints
+    const fingerLength = 0.5;
+    const fingerRadius = 0.1;
+    const jointMaterial = new THREE.MeshBasicMaterial({ color: 0xCD853F });
+
+    function createFinger(x, y, z) {
+        const finger = new THREE.Group();
+        
+        const joint1 = new THREE.Mesh(new THREE.CylinderGeometry(fingerRadius, fingerRadius, fingerLength, 32), jointMaterial);
+        joint1.position.set(0, fingerLength / 2, 0);
+        
+        const joint2 = new THREE.Mesh(new THREE.CylinderGeometry(fingerRadius, fingerRadius, fingerLength, 32), jointMaterial);
+        joint2.position.set(0, fingerLength / 2, 0);
+        joint2.position.y += fingerLength;
+
+        const joint3 = new THREE.Mesh(new THREE.CylinderGeometry(fingerRadius, fingerRadius, fingerLength, 32), jointMaterial);
+        joint3.position.set(0, fingerLength / 2, 0);
+        joint3.position.y += fingerLength * 2;
+
+        joint1.add(joint2);
+        joint2.add(joint3);
+        finger.add(joint1);
+        
+        finger.position.set(x, y, z);
+        hand.add(finger);
+        
+        return { joint1, joint2, joint3 };
+    }
+
+    // Create fingers
+    const fingers = [
+        createFinger(-0.6, 0.25, -0.6),
+        createFinger(-0.2, 0.25, -0.8),
+        createFinger(0.2, 0.25, -0.8),
+        createFinger(0.6, 0.25, -0.6),
+        createFinger(0, 0.25, 0.6)  // Thumb
+    ];
+
+    // GUI controls
+    const gui = new dat.GUI();
+    fingers.forEach((finger, index) => {
+        const folder = gui.addFolder(`Finger ${index + 1}`);
+        folder.add(finger.joint1.rotation, 'x', 0, Math.PI / 2).name('Joint 1');
+        folder.add(finger.joint2.rotation, 'x', 0, Math.PI / 2).name('Joint 2');
+        folder.add(finger.joint3.rotation, 'x', 0, Math.PI / 2).name('Joint 3');
+        folder.open();
+    });
+
+    // Camera position
+    camera.position.z = 5;
+
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handling
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+</script>
+</body>
+</html>
