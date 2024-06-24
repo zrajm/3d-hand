@@ -8,6 +8,7 @@
 </style>
 <body>
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
 <script>
   // Set up the scene, camera, and renderer
@@ -30,8 +31,6 @@
   const handGeometry = new THREE.BoxGeometry(2, 0.5, 2)
   const handMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 })
   const hand = new THREE.Mesh(handGeometry, handMaterial)
-  hand.rotation.x = 2
-  hand.rotation.y = 2
   scene.add(hand)
 
   // Finger joints
@@ -74,12 +73,6 @@
 
   // GUI controls
   const gui = new dat.GUI()
-  const handFolder = gui.addFolder('Hand Rotation')
-  handFolder.add(hand.rotation, 'x', 0, Math.PI * 2).name('Rotate X')
-  handFolder.add(hand.rotation, 'y', 0, Math.PI * 2).name('Rotate Y')
-  handFolder.add(hand.rotation, 'z', 0, Math.PI * 2).name('Rotate Z')
-  handFolder.open()
-
   fingers.forEach((finger, index) => {
     const folder = gui.addFolder(fingerNames[index])
     folder.add(finger.joint1.rotation, 'x', 0, Math.PI / 2).name('Joint 1')
@@ -89,11 +82,17 @@
   })
 
   // Camera position
-  camera.position.z = 5
+  camera.position.set(-5, 5, 5)
+  const controls = new THREE.OrbitControls(camera, renderer.domElement)
+  controls.enableDamping = true                // Enable inertia
+  controls.dampingFactor = 0.05
+  controls.screenSpacePanning = false
+  controls.maxPolarAngle = Math.PI / 2
 
   // Animation loop
   function animate() {
     requestAnimationFrame(animate)
+    controls.update()
     renderer.render(scene, camera)
   }
 
