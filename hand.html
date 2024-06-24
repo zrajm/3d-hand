@@ -16,20 +16,28 @@
     // Set up the scene, camera, and renderer
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 5, 5).normalize();
+    scene.add(directionalLight);
+
     // Hand base
     const handGeometry = new THREE.BoxGeometry(2, 0.5, 2);
-    const handMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+    const handMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 });
     const hand = new THREE.Mesh(handGeometry, handMaterial);
     scene.add(hand);
 
     // Finger joints
     const fingerLength = 0.5;
     const fingerRadius = 0.1;
-    const jointMaterial = new THREE.MeshBasicMaterial({ color: 0xCD853F });
+    const jointMaterial = new THREE.MeshPhongMaterial({ color: 0xAAAAAA });
 
     function createFinger(x, y, z) {
         const finger = new THREE.Group();
