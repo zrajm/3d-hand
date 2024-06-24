@@ -36,20 +36,20 @@
 
     // Finger joints
     const fingerLength = 0.5;
-    const fingerRadius = 0.1;
+    const fingerWidth = 0.2;
     const jointMaterial = new THREE.MeshPhongMaterial({ color: 0xAAAAAA });
 
     function createFinger(x, y, z) {
         const finger = new THREE.Group();
         
-        const joint1 = new THREE.Mesh(new THREE.CylinderGeometry(fingerRadius, fingerRadius, fingerLength, 32), jointMaterial);
+        const joint1 = new THREE.Mesh(new THREE.BoxGeometry(fingerWidth, fingerLength, fingerWidth), jointMaterial);
         joint1.position.set(0, fingerLength / 2, 0);
         
-        const joint2 = new THREE.Mesh(new THREE.CylinderGeometry(fingerRadius, fingerRadius, fingerLength, 32), jointMaterial);
+        const joint2 = new THREE.Mesh(new THREE.BoxGeometry(fingerWidth, fingerLength, fingerWidth), jointMaterial);
         joint2.position.set(0, fingerLength / 2, 0);
         joint2.position.y += fingerLength;
 
-        const joint3 = new THREE.Mesh(new THREE.CylinderGeometry(fingerRadius, fingerRadius, fingerLength, 32), jointMaterial);
+        const joint3 = new THREE.Mesh(new THREE.BoxGeometry(fingerWidth, fingerLength, fingerWidth), jointMaterial);
         joint3.position.set(0, fingerLength / 2, 0);
         joint3.position.y += fingerLength * 2;
 
