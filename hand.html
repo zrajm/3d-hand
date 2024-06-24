@@ -41,10 +41,10 @@
 
     function createFinger(x, y, z) {
         const finger = new THREE.Group();
-        
+
         const joint1 = new THREE.Mesh(new THREE.BoxGeometry(fingerWidth, fingerLength, fingerWidth), jointMaterial);
         joint1.position.set(0, fingerLength / 2, 0);
-        
+
         const joint2 = new THREE.Mesh(new THREE.BoxGeometry(fingerWidth, fingerLength, fingerWidth), jointMaterial);
         joint2.position.set(0, fingerLength / 2, 0);
         joint2.position.y += fingerLength;
@@ -56,10 +56,10 @@
         joint1.add(joint2);
         joint2.add(joint3);
         finger.add(joint1);
-        
+
         finger.position.set(x, y, z);
         hand.add(finger);
-        
+
         return { joint1, joint2, joint3 };
     }
 
