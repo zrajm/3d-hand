@@ -29,6 +29,8 @@
   const handGeometry = new THREE.BoxGeometry(2, 0.5, 2);
   const handMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 });
   const hand = new THREE.Mesh(handGeometry, handMaterial);
+  hand.rotation.x = 2
+  hand.rotation.y = 2
   scene.add(hand);
 
   // Finger joints
