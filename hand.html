@@ -27,64 +27,92 @@
   scene.add(directionalLight)
 
   // Hand base
-  const fingerNames = ['Index Finger', 'Middle Finger', 'Ring Finger', 'Little Finger', 'Thumb']
-  const handGeometry = new THREE.BoxGeometry(2, 0.5, 2)
+  const fingerNames = ['Thumb', 'Index Finger', 'Middle Finger', 'Ring Finger', 'Little Finger']
+  const handGeometry = new THREE.BoxGeometry(1.6, 1.6, 0.4)
   const handMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 })
+  handMaterial.wireframe = true
   const hand = new THREE.Mesh(handGeometry, handMaterial)
   scene.add(hand)
+  hand.position.set(0, -1, 0)
 
-  // Finger joints
-  const fingerLength = 0.5
-  const fingerWidth = 0.2
-  const jointMaterial = new THREE.MeshPhongMaterial({ color: 0xAAAAAA })
+  // Finger segments
+  const fingerLength = 0.75
+  const fingerWidth  = 0.2
+  const segmentMaterial = new THREE.MeshPhongMaterial({ color: 0xAAAAAA })
 
-  function createFinger(x, y, z) {
+  function createThreeGeometry(threeGeometry, threeMaterial, x = 0, y = 0, z = 0) {
+    const geometry = new THREE.Mesh(threeGeometry, threeMaterial)
+    geometry.position.set(x, y, z)
+    return geometry
+  }
+
+  function createFingerSegment(width, length, material = segmentMaterial) {
+    const rez = 32
+    return new THREE.Group()
+      .add(createThreeGeometry(                // bottom sphere
+        new THREE.SphereGeometry(width, rez, rez),
+        material,
+      ))
+      .add(createThreeGeometry(                // middle cylinder bit
+        new THREE.CylinderGeometry(width, width, length, rez),
+        material,
+        0, length / 2, 0,
+      ))
+      .add(createThreeGeometry(                // top sphere
+        new THREE.SphereGeometry(width, rez, rez),
+        material,
+        0, length, 0,
+      ))
+  }
+
+  function createFinger(x, y, z, width = fingerWidth, length = fingerLength) {
+
+    // Outer segment (fingertip)
+    const segment3 = createFingerSegment(width, length * .5)
+    segment3.position.set(0, length * .7, 0)
+
+    // Middle segment
+    const segment2 = createFingerSegment(width, length * .7)
+    segment2.add(segment3)
+    segment2.position.set(0, length, 0)
+
+    // Inner segment (closest to palm)
+    const segment1 = createFingerSegment(width, length)
+    segment1.add(segment2)
+
+    // Whole finger
     const finger = new THREE.Group()
-
-    const joint1 = new THREE.Mesh(new THREE.BoxGeometry(fingerWidth, fingerLength, fingerWidth), jointMaterial)
-    joint1.position.set(0, fingerLength / 2, 0)
-
-    const joint2 = new THREE.Mesh(new THREE.BoxGeometry(fingerWidth, fingerLength, fingerWidth), jointMaterial)
-    joint2.position.set(0, fingerLength / 2, 0)
-    joint2.position.y += fingerLength
-
-    const joint3 = new THREE.Mesh(new THREE.BoxGeometry(fingerWidth, fingerLength, fingerWidth), jointMaterial)
-    joint3.position.set(0, fingerLength / 2, 0)
-    joint3.position.y += fingerLength * 2
-
-    joint1.add(joint2)
-    joint2.add(joint3)
-    finger.add(joint1)
-
+    finger.add(segment1)
     finger.position.set(x, y, z)
+
     hand.add(finger)
 
-    return { joint1, joint2, joint3 }
+    return { segment1, segment2, segment3 }
   }
 
   // Create fingers
   const fingers = [
-    createFinger(-0.6, 0.25, -0.6),
-    createFinger(-0.2, 0.25, -0.8),
-    createFinger(0.2, 0.25, -0.8),
-    createFinger(0.6, 0.25, -0.6),
-    createFinger(0, 0.25, 0.6)  // Thumb
+    createFinger(1,  -.8,  0,    fingerWidth,       fingerLength),       // thumb
+    createFinger( .6, .85, -.05, fingerWidth * .95, fingerLength * .88), // index
+    createFinger( .2, .9,  -.1,  fingerWidth,       fingerLength),       // middle
+    createFinger(-.2, .85, -.05, fingerWidth * .95, fingerLength * .88), // ring
+    createFinger(-.6, .8,  0,    fingerWidth * .8,  fingerLength * .65), // pinky
   ]
 
   // GUI controls
   const gui = new dat.GUI()
   fingers.forEach((finger, index) => {
     const folder = gui.addFolder(fingerNames[index])
-    folder.add(finger.joint1.rotation, 'x', 0, Math.PI / 2).name('Joint 1')
-    folder.add(finger.joint2.rotation, 'x', 0, Math.PI / 2).name('Joint 2')
-    folder.add(finger.joint3.rotation, 'x', 0, Math.PI / 2).name('Joint 3')
+    folder.add(finger.segment1.rotation, 'x', 0, Math.PI / 2.1).name('Inner joint')
+    folder.add(finger.segment2.rotation, 'x', 0, Math.PI / 1.7).name('Middle joint')
+    folder.add(finger.segment3.rotation, 'x', 0, Math.PI / 2.4).name('Outer joint')
     folder.open()
   })
 
   // Camera position
-  camera.position.set(-5, 5, 5)
+  camera.position.set(2, 1, 4)
   const controls = new THREE.OrbitControls(camera, renderer.domElement)
-  controls.enableDamping = true                // Enable inertia
+  controls.enableDamping = true                // enable inertia
   controls.dampingFactor = 0.05
   controls.screenSpacePanning = false
   controls.maxPolarAngle = Math.PI / 2
