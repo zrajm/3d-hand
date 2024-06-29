@@ -35,33 +35,6 @@
     return geometry
   }
 
-  // Set up the scene, camera, and renderer
-  const scene = new THREE.Scene()
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
-  renderer.setSize(window.innerWidth, window.innerHeight)
-  document.body.appendChild(renderer.domElement)
-
-  // Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, Math.PI * .1)
-  scene.add(ambientLight)
-
-  const directionalLight = new THREE.DirectionalLight(0xffffff, Math.PI)
-  directionalLight.position.set(5, 5, 5).normalize()
-  scene.add(directionalLight)
-
-  // Hand base
-  const handGeometry = new THREE.BoxGeometry(1.6, 1.6, 0.4)
-  const handMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff })
-  handMaterial.wireframe = true
-  const hand = new THREE.Mesh(handGeometry, handMaterial)
-  scene.add(hand)
-  hand.position.set(0, -1, 0)
-
-  // Finger segments
-  const fingerLength = 0.75
-  const fingerWidth  = 0.2
-
   function createFingerSegment(width, length, xtra = {}) {
     return modifyMesh(new THREE.Group(), xtra)
       .add(createMesh('sphere', width))    // base
@@ -89,6 +62,32 @@
     return [innerSegment, middleSegment, outerSegment, finger]
   }
 
+  // Set up the scene, camera, and renderer
+  const scene = new THREE.Scene()
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  document.body.appendChild(renderer.domElement)
+
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, Math.PI * .1)
+  scene.add(ambientLight)
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, Math.PI)
+  directionalLight.position.set(5, 5, 5).normalize()
+  scene.add(directionalLight)
+
+  // Hand base
+  const handGeometry = new THREE.BoxGeometry(1.6, 1.6, 0.4)
+  const handMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff })
+  handMaterial.wireframe = true
+  const hand = new THREE.Mesh(handGeometry, handMaterial)
+  scene.add(hand)
+  hand.position.set(0, -1, 0)
+
+  // Create fingers
+  const fingerLength = 0.75
+  const fingerWidth  = 0.2
   const fingers = [
     ["Thumb",         ...createFinger( .6,  -.8,  0,  fingerWidth,       fingerLength, [Math.PI * .5, Math.PI, -.25])],
     ["Index Finger",  ...createFinger( .6, .85, -.05, fingerWidth * .95, fingerLength * .88)],
