@@ -99,13 +99,13 @@
 
   // GUI controls
   const gui = new GUI()
-  fingers.forEach((finger, index) => {
+  for (const finger of fingers) {
     const folder = gui.addFolder(finger[0])
     folder.add(finger[1].rotation, 'x', 0, Math.PI / 2.1).name('Inner joint')
     folder.add(finger[2].rotation, 'x', 0, Math.PI / 1.7).name('Middle joint')
     folder.add(finger[3].rotation, 'x', 0, Math.PI / 2.4).name('Outer joint')
     folder.open()
-  })
+  }
 
   // Camera position
   camera.position.set(2, 1, 4)
