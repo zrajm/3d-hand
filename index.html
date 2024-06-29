@@ -7,10 +7,19 @@
   canvas { display: block; }
 </style>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
-<script>
+<script type="importmap">{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.166.0/build/three.module.min.js",
+    "three/addons/controls/": "https://cdn.jsdelivr.net/npm/three@0.166.0/examples/jsm/controls/",
+    "dat.gui": "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.module.min.js"
+  }
+}</script>
+<script type="module">
+
+  import * as THREE from 'three'
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+  import { GUI } from 'dat.gui'
+
   // Set up the scene, camera, and renderer
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -97,7 +106,7 @@
   ]
 
   // GUI controls
-  const gui = new dat.GUI()
+  const gui = new GUI()
   fingers.forEach((finger, index) => {
     const folder = gui.addFolder(finger[0])
     folder.add(finger[1].rotation, 'x', 0, Math.PI / 2.1).name('Inner joint')
@@ -108,7 +117,7 @@
 
   // Camera position
   camera.position.set(2, 1, 4)
-  const controls = new THREE.OrbitControls(camera, renderer.domElement)
+  const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true                // enable inertia
   controls.dampingFactor = 0.05
   controls.screenSpacePanning = false
