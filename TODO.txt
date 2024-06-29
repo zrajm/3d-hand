@@ -3,21 +3,26 @@
 visual-line-mode
 adaptive-wrap-prefix-mode
 
-* TODO Thumb
-* TODO Finger spreading
-* TODO Add palm
-* TODO Improve fingertip shape
-  Should maybe include some kind of fingernails? Or at least not approximate finger tips as half a sphere, but have something hinting at the shape of an actual fingertip.
-* TODO Light source should be stationary
-  When rotating the hand, the light source should remain stationary.
-* TODO Remove hidden surfaces                                      :OPTIMIZE:
-  For example the finger segments are created using spheres and cylinders, creating a lot of unnecessary surfaces that are hidden inside each finger segment. The end bits should be half spheres, attached to cylinders open cylinders (that is the cylinders should not have lids at either ends).
+* [0/7] Soon
+** TODO Thumb
+** TODO Finger spreading
+** TODO Add palm
+** TODO Improve fingertip shape
+   Should maybe include some kind of fingernails? Or at least not approximate finger tips as half a sphere, but have something hinting at the shape of an actual fingertip.
+** TODO Light source should be stationary
+   When rotating the hand, the light source should remain stationary.
+** TODO Remove hidden surfaces                                     :OPTIMIZE:
+   For example the finger segments are created using spheres and cylinders, creating a lot of unnecessary surfaces that are hidden inside each finger segment. The end bits should be half spheres, attached to cylinders open cylinders (that is the cylinders should not have lids at either ends).
 
-  The Three.js `SphereGeometry` class has an options `phiStart` and `phiLength` which may be used to draw half spheres. Use this?
+   The Three.js `SphereGeometry` class has an options `phiStart` and `phiLength` which may be used to draw half spheres. Use this?
 
-  + [[https://threejs.org/docs/#api/en/geometries/SphereGeometry][Three.js Manual: SphereGeometry]]
-* TODO Don't redraw stationary object                              :OPTIMIZE:
-  Currently CPU cycles are used even when object remains stationary. :(
-* TODO Serve all Javascript locally
-  Don't use CDN.
+   + [[https://threejs.org/docs/#api/en/geometries/SphereGeometry][Three.js Manual: SphereGeometry]]
+** TODO Don't redraw stationary object                             :OPTIMIZE:
+   Currently CPU cycles are used even when object remains stationary. :(
+* [0/1] Future
+** TODO Support transcription
+* [1/1] Finished
+** DONE Serve all Javascript locally
+   CLOSED: [2024-06-29 Sat 08:05]
+   Don't use CDN.
 * [eof]

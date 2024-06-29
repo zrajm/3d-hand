@@ -7,18 +7,10 @@
   canvas { display: block; }
 </style>
 <body>
-<script type="importmap">{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.166.0/build/three.module.min.js",
-    "three/addons/controls/": "https://cdn.jsdelivr.net/npm/three@0.166.0/examples/jsm/controls/",
-    "dat.gui": "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.module.min.js"
-  }
-}</script>
 <script type="module">
-
-  import * as THREE from 'three'
-  import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-  import { GUI } from 'dat.gui'
+  import * as THREE from './js/three.min.js'
+  import { OrbitControls } from './js/three-orbit-controls.min.js'
+  import { GUI } from './js/dat-gui.min.js'
 
   // Set up the scene, camera, and renderer
   const scene = new THREE.Scene()
