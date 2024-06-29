@@ -12,6 +12,29 @@
   import { OrbitControls } from './js/three-orbit-controls.min.js'
   import { GUI } from './js/dat-gui.min.js'
 
+  // Usage: createMesh(geometryName, args, [{ x, y, z, a, b, c, material }])
+  function createMesh(name, ...args) {
+    const xtra = typeof args.at(-1) === 'object' ? args.pop() : {}
+    const threeName = name[0].toUpperCase() + name.slice(1) + 'Geometry'
+    const geometry = new THREE[threeName](...args)
+    return modifyMesh(new THREE.Mesh(geometry), xtra)
+  }
+
+  // Usage: createMesh(geometry, [{ x, y, z, a, b, c, material }])
+  const defaultMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff })
+  function modifyMesh(geometry, {
+    x = 0, y = 0, z = 0,            // position
+    a = 0, b = 0, c = 0,            // rotation
+    material = defaultMaterial,
+  }) {
+    geometry.rotation.set(a, b, c)
+    geometry.position.set(x, y, z)
+    if (Object.hasOwn(geometry, 'material')) {
+      geometry.material = material
+    }
+    return geometry
+  }
+
   // Set up the scene, camera, and renderer
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -38,59 +61,36 @@
   // Finger segments
   const fingerLength = 0.75
   const fingerWidth  = 0.2
-  const segmentMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff })
 
-  function createThreeGeometry(threeGeometry, threeMaterial, x = 0, y = 0, z = 0) {
-    const geometry = new THREE.Mesh(threeGeometry, threeMaterial)
-    geometry.position.set(x, y, z)
-    return geometry
+  function createFingerSegment(width, length, xtra = {}) {
+    return modifyMesh(new THREE.Group(), xtra)
+      .add(createMesh('sphere', width))    // base
+      .add(createMesh('cylinder', width, width, length, { y: length / 2 }))
+      .add(createMesh('sphere', width, { y: length }))   // tip
   }
 
-  function createFingerSegment(width, length, material = segmentMaterial) {
-    const rez = 32
-    return new THREE.Group()
-      .add(createThreeGeometry(                // bottom sphere
-        new THREE.SphereGeometry(width, rez, rez),
-        material,
-      ))
-      .add(createThreeGeometry(                // middle cylinder bit
-        new THREE.CylinderGeometry(width, width, length, rez),
-        material,
-        0, length / 2, 0,
-      ))
-      .add(createThreeGeometry(                // top sphere
-        new THREE.SphereGeometry(width, rez, rez),
-        material,
-        0, length, 0,
-      ))
-  }
-
-  function createFinger(x, y, z, width = fingerWidth, length = fingerLength) {
+  function createFinger(x, y, z, width, length, [a = 0, b = 0, c = 0] = []) {
     // Outer segment (fingertip)
-    const segment3 = createFingerSegment(width, length * .5)
-    segment3.position.set(0, length * .7, 0)
+    const outerSegment = createFingerSegment(width, length * .5, { y: length * .7 })
 
     // Middle segment
-    const segment2 = createFingerSegment(width, length * .7)
-    segment2.add(segment3)
-    segment2.position.set(0, length, 0)
+    const middleSegment = createFingerSegment(width, length * .7, { y: length })
+      .add(outerSegment)
 
     // Inner segment (closest to palm)
-    const segment1 = createFingerSegment(width, length)
-    segment1.add(segment2)
+    const innerSegment = createFingerSegment(width, length)
+      .add(middleSegment)
 
     // Whole finger
-    const finger = new THREE.Group()
-    finger.add(segment1)
-    finger.position.set(x, y, z)
+    const finger = modifyMesh(new THREE.Group(), { x, y, z, a, b, c })
+      .add(innerSegment)
 
     hand.add(finger)
-    return [segment1, segment2, segment3]
+    return [innerSegment, middleSegment, outerSegment, finger]
   }
 
-  // Create fingers
   const fingers = [
-    ["Thumb",         ...createFinger(1,  -.8,  0,    fingerWidth,       fingerLength)],
+    ["Thumb",         ...createFinger( .6,  -.8,  0,  fingerWidth,       fingerLength, [Math.PI * .5, Math.PI, -.25])],
     ["Index Finger",  ...createFinger( .6, .85, -.05, fingerWidth * .95, fingerLength * .88)],
     ["Middle Finger", ...createFinger( .2, .9,  -.1,  fingerWidth,       fingerLength)],
     ["Ring Finger",   ...createFinger(-.2, .85, -.05, fingerWidth * .95, fingerLength * .88)],
@@ -104,6 +104,7 @@
     folder.add(finger[1].rotation, 'x', 0, Math.PI / 2.1).name('Inner joint')
     folder.add(finger[2].rotation, 'x', 0, Math.PI / 1.7).name('Middle joint')
     folder.add(finger[3].rotation, 'x', 0, Math.PI / 2.4).name('Outer joint')
+    folder.add(finger[4].rotation, 'z', Math.PI * -.1, Math.PI * .1).name('Spread')
     folder.open()
   }
 
@@ -121,7 +122,6 @@
     controls.update()
     renderer.render(scene, camera)
   }
-
   animate()
 
   // Resize handling

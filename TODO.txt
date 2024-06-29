@@ -20,7 +20,11 @@ adaptive-wrap-prefix-mode
    + [[https://threejs.org/docs/#api/en/geometries/CylinderGeometry][Three.js Manual: CylinderGeometry]] (See `openEnded` property.)
 ** TODO Don't redraw stationary object                             :OPTIMIZE:
    Currently CPU cycles are used even when object remains stationary. :(
-* [0/1] Future
+* [0/2] Future
+** TODO Prettier light & material
+   Maybe take inspiration from this? [[https://discourse.threejs.org/t/white-toon-material/55762][White toon material]]
+
+   Maybe make something inspired by the illustrations in Svenskt teckenspråkslexikon? (That is, something that looks drawn rather than photographic.) Or maybe something more toon like would look better, given that the hand isn't very natural looking?
 ** TODO Support transcription
 * [2/2] Finished
 ** DONE Improved colors
