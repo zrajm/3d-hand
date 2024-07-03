@@ -20,7 +20,7 @@
     return modifyMesh(new THREE.Mesh(geometry), xtra)
   }
 
-  // Usage: createMesh(geometry, [{ x, y, z, a, b, c, material }])
+  // Usage: modifyMesh(geometry, [{ x, y, z, a, b, c, material }])
   const defaultMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff })
   function modifyMesh(geometry, {
     x = 0, y = 0, z = 0,            // position
@@ -62,6 +62,22 @@
     return [innerSegment, middleSegment, outerSegment, finger]
   }
 
+  function createCylinder([x1 = 0, y1 = 0, z1 = 0, r1 = 1], [x2 = x1, y2 = y1, z2 = z1, r2 = r1]) {
+    const start  = new THREE.Vector3(x1, y1, z1)
+    const end    = new THREE.Vector3(x2, y2, z2)
+    const mid    = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5)
+    const length = start.distanceTo(end)
+    // Rotate to align with direction vector
+    const rotationMatrix = new THREE.Matrix4()
+      .makeRotationX(Math.PI / 2);             // rotate 90° around X axis
+    const orientation = new THREE.Matrix4()    // cylinder orientation
+      .lookAt(start, end, new THREE.Vector3(0, 1, 0))
+      .multiply(rotationMatrix)
+    return new THREE.CylinderGeometry(r1, r2, length)
+      .applyMatrix4(orientation)               // apply orientation
+      .translate(...mid)                       // move to midpoint
+  }
+
   // Set up the scene, camera, and renderer
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -78,10 +94,7 @@
   scene.add(directionalLight)
 
   // Hand base
-  const handGeometry = new THREE.BoxGeometry(1.6, 1.6, 0.4)
-  const handMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff })
-  handMaterial.wireframe = true
-  const hand = new THREE.Mesh(handGeometry, handMaterial)
+  const hand = new THREE.Group()
   scene.add(hand)
   hand.position.set(0, -1, 0)
 
@@ -89,12 +102,49 @@
   const fingerLength = 0.75
   const fingerWidth  = 0.2
   const fingers = [
-    ["Thumb",         ...createFinger( .6,  -.8,  0,  fingerWidth,       fingerLength, [Math.PI * .5, Math.PI, -.25])],
+    ["Thumb",         ...createFinger( .6,  -.1,  0,  fingerWidth,       fingerLength * .75, [Math.PI * .5, Math.PI, -.25])],
     ["Index Finger",  ...createFinger( .6, .85, -.05, fingerWidth * .95, fingerLength * .88)],
     ["Middle Finger", ...createFinger( .2, .9,  -.1,  fingerWidth,       fingerLength)],
     ["Ring Finger",   ...createFinger(-.2, .85, -.05, fingerWidth * .95, fingerLength * .88)],
     ["Little Finger", ...createFinger(-.6, .8,  0,    fingerWidth * .8,  fingerLength * .65)],
   ]
+  hand
+    .add(new THREE.Mesh(createCylinder(
+      [ .6,  .85, -.05, fingerWidth * .95],    // index
+      [ .2,  .9,  -.1,  fingerWidth      ],    // middle
+    ), defaultMaterial))
+    .add(new THREE.Mesh(createCylinder(
+      [ .2,  .9,  -.1,  fingerWidth      ],    // middle
+      [-.2,  .85, -.05, fingerWidth * .95],    // ring
+    ), defaultMaterial))
+    .add(new THREE.Mesh(createCylinder(
+      [-.2,  .85, -.05, fingerWidth * .95],    // ring
+      [-.6,  .8,  0,    fingerWidth * .8 ],    // little
+    ), defaultMaterial))
+    .add(new THREE.Mesh(createCylinder(
+      [ .6, -.1,  0,    fingerWidth      ],    // thumb
+      [ .6,  .85, -.05, fingerWidth * .95],    // index
+    ), defaultMaterial))
+    .add(new THREE.Mesh(createCylinder(
+      [-.6,  .8,  0,    fingerWidth * .8 ],    // little
+      [-.6, -.1,  0,    fingerWidth * .8 ],    // palm corner
+    ), defaultMaterial))
+    .add(new THREE.Mesh(createCylinder(
+      [-.3, -.5,  0,    fingerWidth      ],    // wrist palm corner
+      [ .3, -.5,  0,    fingerWidth      ],    // wrist thumb
+    ), defaultMaterial))
+    .add(new THREE.Mesh(createCylinder(
+      [-.6, -.1,  0,    fingerWidth * .8 ],    // palm corner
+      [-.3, -.5,  0,    fingerWidth      ],    // wrist palm corner
+    ), defaultMaterial))
+    .add(new THREE.Mesh(createCylinder(
+      [ .6, -.1,  0,    fingerWidth      ],    // thumb
+      [ .3, -.5,  0,    fingerWidth      ],    // wrist thumb
+    ), defaultMaterial))
+    .add(createMesh('sphere', fingerWidth * .8, { x: -.6, y: -.1 }))   // palm corner
+    .add(createMesh('sphere', fingerWidth,      { x:  .6, y: -.1 }))   // thumb corner
+    .add(createMesh('sphere', fingerWidth, { x: -.3, y: -.5 }))   // palm corner
+    .add(createMesh('sphere', fingerWidth, { x:  .3, y: -.5 }))   // thumb corner
 
   // GUI controls
   const gui = new GUI()
