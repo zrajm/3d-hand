@@ -3,7 +3,7 @@
 visual-line-mode
 adaptive-wrap-prefix-mode
 
-* [0/7] Soon
+* [1/7] Soon
 ** TODO Thumb
 ** TODO Finger spreading
 ** TODO Add palm
@@ -18,15 +18,16 @@ adaptive-wrap-prefix-mode
 
    + [[https://threejs.org/docs/#api/en/geometries/SphereGeometry][Three.js Manual: SphereGeometry]]
    + [[https://threejs.org/docs/#api/en/geometries/CylinderGeometry][Three.js Manual: CylinderGeometry]] (See `openEnded` property.)
-** TODO Don't redraw stationary object                             :OPTIMIZE:
-   Currently CPU cycles are used even when object remains stationary. :(
 * [0/2] Future
 ** TODO Prettier light & material
    Maybe take inspiration from this? [[https://discourse.threejs.org/t/white-toon-material/55762][White toon material]]
 
    Maybe make something inspired by the illustrations in Svenskt teckenspråkslexikon? (That is, something that looks drawn rather than photographic.) Or maybe something more toon like would look better, given that the hand isn't very natural looking?
 ** TODO Support transcription
-* [2/2] Finished
+* [3/3] Finished
+** DONE Only redraw when scene has changed                         :OPTIMIZE:
+   CLOSED: [2024-07-03 Wed 06:19]
+   Currently CPU cycles are used even when object remains stationary. :(
 ** DONE Improved colors
    CLOSED: [2024-06-29 Sat 09:24]
 ** DONE Serve all Javascript locally

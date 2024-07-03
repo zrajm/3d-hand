@@ -100,26 +100,36 @@
   const gui = new GUI()
   for (const finger of fingers) {
     const folder = gui.addFolder(finger[0])
-    folder.add(finger[1].rotation, 'x', 0, Math.PI / 2.1).name('Inner joint')
-    folder.add(finger[2].rotation, 'x', 0, Math.PI / 1.7).name('Middle joint')
-    folder.add(finger[3].rotation, 'x', 0, Math.PI / 2.4).name('Outer joint')
-    folder.add(finger[4].rotation, 'z', Math.PI * -.1, Math.PI * .1).name('Spread')
+    folder.add(finger[1].rotation, 'x', 0, Math.PI / 2.1)
+      .name('Inner joint').onChange(sceneChanged)
+    folder.add(finger[2].rotation, 'x', 0, Math.PI / 1.7)
+      .name('Middle joint').onChange(sceneChanged)
+    folder.add(finger[3].rotation, 'x', 0, Math.PI / 2.4)
+      .name('Outer joint').onChange(sceneChanged)
+    folder.add(finger[4].rotation, 'z', Math.PI * -.1, Math.PI * .1)
+      .name('Spread').onChange(sceneChanged)
     folder.open()
   }
 
   // Camera position
   camera.position.set(2, 1, 4)
+  function sceneChanged(x = true) { sceneChanged.value = !!x }
+  sceneChanged.value = true
+
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true                // enable inertia
   controls.dampingFactor = 0.05
   controls.screenSpacePanning = false
   controls.maxPolarAngle = Math.PI
+  controls.addEventListener('change', sceneChanged)
 
   // Animation loop
   function animate() {
     requestAnimationFrame(animate)
+    if (sceneChanged.value !== true) { return }
     controls.update()
     renderer.render(scene, camera)
+    sceneChanged(false)
   }
   animate()
 
@@ -128,6 +138,7 @@
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
+    sceneChanged()
   })
 </script>
 </body>
