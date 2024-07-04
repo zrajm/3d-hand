@@ -42,7 +42,7 @@
       .add(createMesh('sphere', width, { y: length }))   // tip
   }
 
-  function createFinger(x, y, z, width, length, [a = 0, b = 0, c = 0] = []) {
+  function createFinger(name, x, y, z, width, length, [a = 0, b = 0, c = 0] = []) {
     // Outer segment (fingertip)
     const outerSegment = createFingerSegment(width, length * .5, { y: length * .7 })
 
@@ -58,7 +58,7 @@
     const finger = modifyMesh(new THREE.Group(), { x, y, z, a, b, c })
       .add(innerSegment)
 
-    return [finger, innerSegment, middleSegment, outerSegment]
+    return [name, finger, innerSegment, middleSegment, outerSegment]
   }
 
   function createCylinder([x1 = 0, y1 = 0, z1 = 0, r1 = 1], [x2 = x1, y2 = y1, z2 = z1, r2 = r1]) {
@@ -102,11 +102,11 @@
   const fingerLength = 0.75
   const fingerWidth  = 0.2
   const fingers = [
-    ["Thumb",         ...createFinger( .6,  -.1,  0,  fingerWidth,       fingerLength * .75, [Math.PI * .5, Math.PI, -.25])],
-    ["Index Finger",  ...createFinger( .6, .85, -.05, fingerWidth * .95, fingerLength * .88)],
-    ["Middle Finger", ...createFinger( .2, .9,  -.1,  fingerWidth,       fingerLength)],
-    ["Ring Finger",   ...createFinger(-.2, .85, -.05, fingerWidth * .95, fingerLength * .88)],
-    ["Little Finger", ...createFinger(-.6, .8,  0,    fingerWidth * .8,  fingerLength * .65)],
+    createFinger("Thumb", .6,  -.1,  0,  fingerWidth,       fingerLength * .75, [Math.PI * .5, Math.PI, -.25]),
+    createFinger("Index Finger",   .6, .85, -.05, fingerWidth * .95, fingerLength * .88),
+    createFinger("Middle Finger",  .2, .9,  -.1,  fingerWidth,       fingerLength),
+    createFinger("Ring Finger",   -.2, .85, -.05, fingerWidth * .95, fingerLength * .88),
+    createFinger("Little Finger", -.6, .8,  0,    fingerWidth * .8,  fingerLength * .65),
   ]
   hand
     .add(new THREE.Mesh(createCylinder(
