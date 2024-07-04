@@ -5,11 +5,11 @@ adaptive-wrap-prefix-mode
 
 * [0/6] Soon
 ** TODO Thumb
+   The range of motion should reflect thumb's actual range.
 ** TODO Fill in palm
+** TODO Better wrist
 ** TODO Improve fingertip shape
    Should maybe include some kind of fingernails? Or at least not approximate finger tips as half a sphere, but have something hinting at the shape of an actual fingertip.
-** TODO Light source should be stationary
-   When rotating the hand, the light source should remain stationary.
 ** TODO Load/save hand configurations
 ** TODO Remove hidden surfaces                                     :OPTIMIZE:
    For example the finger segments are created using spheres and cylinders, creating a lot of unnecessary surfaces that are hidden inside each finger segment. The end bits should be half spheres, attached to cylinders open cylinders (that is the cylinders should not have lids at either ends).
@@ -24,7 +24,10 @@ adaptive-wrap-prefix-mode
 
    Maybe make something inspired by the illustrations in Svenskt teckenspråkslexikon? (That is, something that looks drawn rather than photographic.) Or maybe something more toon like would look better, given that the hand isn't very natural looking?
 ** TODO Support transcription
-* [4/4] Finished
+* [6/6] Finished
+** DONE Light source should be stationary
+   CLOSED: [2024-07-04 Thu 04:48]
+   When rotating the hand, the light source should remain stationary relative to the camera.
 ** DONE Add palm outline
    CLOSED: [2024-07-03 Wed 07:53]
 ** DONE Only redraw when scene has changed                         :OPTIMIZE:
