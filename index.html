@@ -58,8 +58,7 @@
     const finger = modifyMesh(new THREE.Group(), { x, y, z, a, b, c })
       .add(innerSegment)
 
-    hand.add(finger)
-    return [innerSegment, middleSegment, outerSegment, finger]
+    return [finger, innerSegment, middleSegment, outerSegment]
   }
 
   function createCylinder([x1 = 0, y1 = 0, z1 = 0, r1 = 1], [x2 = x1, y2 = y1, z2 = z1, r2 = r1]) {
@@ -147,17 +146,18 @@
     .add(createMesh('sphere', fingerWidth, { x: -.3, y: -.5 }))   // palm corner
     .add(createMesh('sphere', fingerWidth, { x:  .3, y: -.5 }))   // thumb corner
 
-  // GUI controls
+  // Add fingers to 3D model, and add GUI controls for them
   const gui = new GUI()
-  for (const finger of fingers) {
-    const folder = gui.addFolder(finger[0])
-    folder.add(finger[1].rotation, 'x', 0, Math.PI / 2.1)
+  for (const [name, finger, inner, middle, outer] of fingers) {
+    hand.add(finger)                           // add to 3D model
+    const folder = gui.addFolder(name)         // GUI controls
+    folder.add(inner.rotation, 'x', 0, Math.PI / 2.1)
       .name('Inner joint').onChange(sceneChanged)
-    folder.add(finger[2].rotation, 'x', 0, Math.PI / 1.7)
+    folder.add(middle.rotation, 'x', 0, Math.PI / 1.7)
       .name('Middle joint').onChange(sceneChanged)
-    folder.add(finger[3].rotation, 'x', 0, Math.PI / 2.4)
+    folder.add(outer.rotation, 'x', 0, Math.PI / 2.4)
       .name('Outer joint').onChange(sceneChanged)
-    folder.add(finger[4].rotation, 'z', Math.PI * -.1, Math.PI * .1)
+    folder.add(finger.rotation, 'z', Math.PI * -.1, Math.PI * .1)
       .name('Spread').onChange(sceneChanged)
     folder.open()
   }
