@@ -3,7 +3,11 @@
 visual-line-mode
 adaptive-wrap-prefix-mode
 
-* [0/9] Soon
+* [0/10] Soon
+** TODO Add link to LICENSE
+** TODO Add link to README from webpage
+   Someone who stumbles on the 3d-hand page should be able to determine what it
+   was indented for & who wrote it.
 ** TODO Using the finger controls shouldn't rotate model
    Currently the model rotates when adjusting controls. I assume this has got something to do with HTML event bubbling or somesuch?
 ** TODO Allow any rotation of hand
@@ -23,7 +27,8 @@ adaptive-wrap-prefix-mode
    + [[https://threejs.org/docs/#api/en/geometries/SphereGeometry][Three.js Manual: SphereGeometry]]
    + [[https://threejs.org/docs/#api/en/geometries/CylinderGeometry][Three.js Manual: CylinderGeometry]] (See `openEnded` property.)
 ** TODO Interface for controlling handshape
-   The controlling interface should allow precise individual movement, but also simple transcription-based movement.
+   The controlling interface should allow precise individual movement, but also
+   simple transcription-based movement.
 
    Current pain points: Supporting 'stacked' (that is K-like handshapes).
 
@@ -51,14 +56,22 @@ adaptive-wrap-prefix-mode
 
    The Basics
    ==========
+   Finger properties are set to: 0–100, where 0 = not bent, and 100 = fully
+   bent. There's a property for each of the three finger segments: 'base'
+   (closest to the palm), 'mid' and 'tip'. The thumb also has a 'rotation'
+   property, while the other fingers have a 'spread' property.
 
-   Finger properties are set to: 0–100, where 0 = not bent, and 100 = fully bent. There's a property for each of the three finger segments: 'base' (closest to the palm), 'mid' and 'tip'. The thumb also has a 'rotation' property, while the other fingers have a 'spread' property.
-
-   This is slightly different from the anatomical view: The 'tip' segments correspond to the distal phalanx, but 'mid' and 'base' segments correspond to different bones in the thumbs and fingers. The 'base' segments maps onto to the thumb's metacarpal, but the other finger's proximal phalanges, while the 'mid' segments correspond to the thumb's medial phalanx, and the other finger's medial phalanges.
+   This is slightly different from the anatomical view: The 'tip' segments
+   correspond to the distal phalanx, but 'mid' and 'base' segments correspond
+   to different bones in the thumbs and fingers. The 'base' segments maps onto
+   to the thumb's metacarpal, but the other finger's proximal phalanges, while
+   the 'mid' segments correspond to the thumb's medial phalanx, and the other
+   finger's medial phalanges.
 
    Fingers are numbered: 0 = thumb, 1 = index, 2 = middle, 3 = ring, 4 = pinky.
 
-   Segments are number from palm out: 0 = spread/rotation, 1 = base, 2 = mid, 3 = tip.
+   Segments are number from palm out: 0 = spread/rotation, 1 = base, 2 = mid,
+   3 = tip.
 
    hand.thumb  = hand[0]
      -- hand.thumb.rotation = hand[0][0]
@@ -115,32 +128,32 @@ adaptive-wrap-prefix-mode
    hand.unselected(string)
    hand.spread
 
+   radial = thumb side, ulnar = pinky side (Thiessen switched them around in
+   his thesis)
 
-   radial = thumb side, ulnar = pinky side (Thiessen switched them around in his thesis)
+   ---------------------------------------------------------------------------
+   Bending can be optionally qualified by a number to indicate amount
+   (0-9 -- 0 = nothing, 9 = fully).
 
-Bending can be optionally qualified by a number to indicate amount (0-9 -- 0 = nothing, 9 = fully).
+   i = index
+   m = middle
+   r = ring
+   p = pinky
+   t = thumb
 
-i = index
-m = middle
-r = ring
-p = pinky
-t = thumb
+   v = spread
+   k = stack
+   x = crossed
 
-v = spread
-k = stack
-x = crossed
-
-hand.bend('imrp', 50%)
-
-
-
-
-
+   hand.bend('imrp', 50%)
 * [0/2] Future
 ** TODO Prettier light & material
    Maybe take inspiration from this? [[https://discourse.threejs.org/t/white-toon-material/55762][White toon material]]
 
-   Maybe make something inspired by the illustrations in Svenskt teckenspråkslexikon? (That is, something that looks drawn rather than photographic.) Or maybe something more toon like would look better, given that the hand isn't very natural looking?
+   Maybe make something inspired by the illustrations in Svenskt
+   teckenspråkslexikon? (That is, something that looks drawn rather than
+   photographic.) Or maybe something more toon like would look better, given
+   that the hand isn't very natural looking?
 ** TODO Support transcription
 * [6/6] Finished
 ** DONE Light source should be stationary
